@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>행운의 숫자</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f4ff;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      color: #333;
+    }
+
+    button {
+      padding: 12px 28px;
+      font-size: 16px;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4338ca;
+    }
+
+    #result {
+      margin-top: 24px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #4f46e5;
+      min-height: 36px;
+    }
+  </style>
+</head>
+<body>
+  <h1>오늘의 행운의 숫자</h1>
+  <button onclick="showLuckyNumber()">행운의 숫자 뽑기</button>
+  <div id="result"></div>
+
+  <script>
+    function showLuckyNumber() {
+      // 1~100 사이의 무작위 정수를 행운의 숫자로 생성
+      const lucky = Math.floor(Math.random() * 100) + 1;
+      document.getElementById('result').textContent = '당신의 행운의 숫자: ' + lucky;
+    }
+  </script>
+</body>
+</html>
