@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>행운의 숫자</title>
   <style>
+    /* 흑백 모드 CSS 변수 정의 */
+    :root {
+      --bg: #f0f4ff;
+      --text: #333;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --toggle-bg: #dde1f0;
+      --toggle-text: #333;
+    }
+
+    /* 다크 모드 변수 재정의 */
+    body.dark {
+      --bg: #1a1a2e;
+      --text: #e0e0e0;
+      --accent: #818cf8;
+      --accent-hover: #6366f1;
+      --toggle-bg: #2e2e4e;
+      --toggle-text: #e0e0e0;
+    }
+
     body {
       font-family: sans-serif;
       display: flex;
@@ -13,38 +33,63 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      background-color: #f0f4ff;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s, color 0.3s;
     }
 
     h1 {
       margin-bottom: 24px;
-      color: #333;
+      color: var(--text);
+    }
+
+    /* 흑백 모드 토글 버튼 — 우측 상단 고정 */
+    #mode-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      padding: 8px 16px;
+      font-size: 14px;
+      background-color: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    #mode-toggle:hover {
+      opacity: 0.85;
     }
 
     button {
       padding: 12px 28px;
       font-size: 16px;
-      background-color: #4f46e5;
+      background-color: var(--accent);
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
 
     button:hover {
-      background-color: #4338ca;
+      background-color: var(--accent-hover);
     }
 
     #result {
       margin-top: 24px;
       font-size: 24px;
       font-weight: bold;
-      color: #4f46e5;
+      color: var(--accent);
       min-height: 36px;
     }
   </style>
 </head>
 <body>
+  <!-- 흑백 모드 토글 버튼 -->
+  <button id="mode-toggle" onclick="toggleMode()">다크 모드</button>
+
   <h1>오늘의 행운의 숫자</h1>
   <button onclick="showLuckyNumber()">행운의 숫자 뽑기</button>
   <div id="result"></div>
@@ -54,6 +99,12 @@
       // 1~100 사이의 무작위 정수를 행운의 숫자로 생성
       const lucky = Math.floor(Math.random() * 100) + 1;
       document.getElementById('result').textContent = '당신의 행운의 숫자: ' + lucky;
+    }
+
+    // 다크/라이트 모드 전환 — body에 dark 클래스 토글
+    function toggleMode() {
+      const isDark = document.body.classList.toggle('dark');
+      document.getElementById('mode-toggle').textContent = isDark ? '라이트 모드' : '다크 모드';
     }
   </script>
 </body>
