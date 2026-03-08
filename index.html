@@ -9,6 +9,37 @@
   <meta property="og:description" content="10시간 비행, 당신의 옆자리를 선택하세요. 결과로 알아보는 나의 여행 성격!">
   <meta property="og:type" content="website">
 
+  <!-- Consent Mode v2: AdSense 스크립트 로드 전 기본값 설정 (EEA/UK/CH 요건) -->
+  <!-- 사용자가 동의 선택 전까지 광고·분석 관련 신호 전송 차단 -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+
+    // 기본값: 전체 거부 (동의 선택 전 안전한 기본 상태)
+    gtag('consent', 'default', {
+      'ad_storage':        'denied',
+      'ad_user_data':      'denied',
+      'ad_personalization':'denied',
+      'analytics_storage': 'denied',
+      'wait_for_update':   500   // 500ms 내 동의 업데이트 대기
+    });
+
+    // 이미 저장된 동의가 있으면 즉시 복원 (재방문자 배너 미표시)
+    (function restoreConsent() {
+      const saved = localStorage.getItem('gdpr_consent');
+      if (!saved) return;
+      try {
+        const c = JSON.parse(saved);
+        gtag('consent', 'update', {
+          'ad_storage':        c.ads     ? 'granted' : 'denied',
+          'ad_user_data':      c.ads     ? 'granted' : 'denied',
+          'ad_personalization':c.ads     ? 'granted' : 'denied',
+          'analytics_storage': c.analytics ? 'granted' : 'denied'
+        });
+      } catch (e) { /* 저장값 파싱 실패 시 무시 */ }
+    })();
+  </script>
+
   <!-- Google AdSense 인증 스크립트 -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1338931707062563"
      crossorigin="anonymous"></script>
@@ -618,9 +649,209 @@
       .seat-name  { font-size: 9px; }
       .seat-card  { min-height: 76px; padding: 6px 2px; }
     }
+
+    /* ══════════════════════════════════
+       GDPR 동의 배너 (EEA/UK/CH 대상)
+    ══════════════════════════════════ */
+    #consent-banner {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-top: 2px solid var(--primary-light);
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.10);
+      z-index: 1000;
+      padding: 16px 20px;
+      /* 저장된 동의가 없을 때만 표시 (JS로 제어) */
+    }
+
+    .consent-inner {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .consent-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .consent-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    /* 토글 스위치 행 */
+    .consent-toggles {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .toggle-label {
+      font-size: 12px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .toggle-label span {
+      display: block;
+      font-size: 10px;
+      color: var(--text-sub);
+      margin-top: 1px;
+    }
+
+    /* 필수 쿠키는 항상 ON, 비활성 */
+    .toggle-required {
+      font-size: 10px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    /* 토글 스위치 */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px; height: 22px;
+      flex-shrink: 0;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: var(--gray-line);
+      border-radius: 22px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      left: 3px; bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .switch input:checked + .slider { background: var(--primary); }
+    .switch input:checked + .slider::before { transform: translateX(18px); }
+    .switch input:disabled + .slider { background: var(--primary); opacity: 0.6; cursor: default; }
+
+    /* 버튼 행 */
+    .consent-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-consent-reject {
+      padding: 10px;
+      background: var(--bg);
+      color: var(--text-sub);
+      border: 1px solid var(--gray-line);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-consent-reject:hover { background: var(--gray-line); }
+
+    .btn-consent-accept {
+      padding: 10px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-consent-accept:hover { background: var(--primary-dark); }
+
+    .consent-footer {
+      margin-top: 10px;
+      font-size: 10px;
+      color: var(--text-sub);
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ════════════ GDPR 동의 배너 ════════════ -->
+  <!-- EEA/UK/CH 방문자에게 표시. 저장된 동의가 있으면 JS가 즉시 숨김 -->
+  <div id="consent-banner" style="display:none" role="dialog" aria-label="쿠키 및 개인정보 동의">
+    <div class="consent-inner">
+      <div class="consent-title">🍪 쿠키 및 개인정보 설정</div>
+      <p class="consent-desc">
+        이 사이트는 광고 게재 및 서비스 개선을 위해 쿠키와 유사 기술을 사용합니다.
+        EEA, 영국, 스위스 거주자는 GDPR에 따라 동의 여부를 선택할 수 있습니다.
+      </p>
+
+      <div class="consent-toggles">
+        <!-- 필수 쿠키: 항상 활성 -->
+        <div class="toggle-row">
+          <div class="toggle-label">
+            필수 쿠키
+            <span>사이트 기능에 필요하며 비활성화할 수 없습니다.</span>
+          </div>
+          <span class="toggle-required">항상 활성</span>
+        </div>
+
+        <!-- 광고 쿠키 -->
+        <div class="toggle-row">
+          <label class="toggle-label" for="toggle-ads">
+            광고 쿠키
+            <span>맞춤형 광고 표시를 위해 Google이 데이터를 수집합니다.</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="toggle-ads" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- 분석 쿠키 -->
+        <div class="toggle-row">
+          <label class="toggle-label" for="toggle-analytics">
+            분석 쿠키
+            <span>방문자 통계 수집으로 서비스 품질을 개선합니다.</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="toggle-analytics" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="consent-buttons">
+        <button class="btn-consent-reject" onclick="saveConsent(false)">거부</button>
+        <button class="btn-consent-accept" onclick="saveConsent(true)">모두 동의</button>
+      </div>
+
+      <p class="consent-footer">
+        Google AdSense 및 개인정보처리방침에 따라 처리됩니다.
+        언제든지 설정을 변경할 수 있습니다.
+      </p>
+    </div>
+  </div>
 
   <header>
     <div class="logo">✈️ 옆자리 선택</div>
@@ -1139,6 +1370,47 @@
       const el    = document.getElementById('play-count');
       if (el) el.textContent = (base + local).toLocaleString('ko-KR');
     })();
+
+    /* ══════════════════════════════════════════
+       GDPR 동의 관리 (Consent Mode v2 연동)
+    ══════════════════════════════════════════ */
+
+    // 페이지 로드 시: 저장된 동의 없으면 배너 표시
+    (function initConsentBanner() {
+      const saved = localStorage.getItem('gdpr_consent');
+      if (!saved) {
+        // 저장값 없음 → 배너 표시
+        document.getElementById('consent-banner').style.display = 'block';
+      }
+      // 저장값이 있는 경우 consent 복원은 head의 restoreConsent()에서 처리됨
+    })();
+
+    // 동의 저장 및 Consent Mode v2 업데이트
+    function saveConsent(acceptAll) {
+      const adsChecked       = acceptAll || document.getElementById('toggle-ads').checked;
+      const analyticsChecked = acceptAll || document.getElementById('toggle-analytics').checked;
+
+      const consent = { ads: adsChecked, analytics: analyticsChecked };
+
+      // localStorage 저장 (1년 유효 기준 날짜 포함)
+      localStorage.setItem('gdpr_consent', JSON.stringify({
+        ...consent,
+        savedAt: new Date().toISOString()
+      }));
+
+      // Consent Mode v2 신호 업데이트
+      gtag('consent', 'update', {
+        'ad_storage':        adsChecked       ? 'granted' : 'denied',
+        'ad_user_data':      adsChecked       ? 'granted' : 'denied',
+        'ad_personalization':adsChecked       ? 'granted' : 'denied',
+        'analytics_storage': analyticsChecked ? 'granted' : 'denied'
+      });
+
+      // 배너 숨김
+      document.getElementById('consent-banner').style.display = 'none';
+
+      showToast(adsChecked ? '동의가 저장됐습니다.' : '필수 쿠키만 사용합니다.');
+    }
   </script>
 
 </body>
