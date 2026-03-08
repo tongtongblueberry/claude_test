@@ -15,13 +15,15 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
 
-    // 기본값: 전체 거부 (동의 선택 전 안전한 기본 상태)
+    // 기본값: 광고 신호만 거부, 분석은 허용
+    // analytics_storage는 한국 포함 비EEA 사용자에게 사전 동의 불필요
+    // ad_storage 등 광고 신호는 동의 전 차단 (GDPR/EEA 요건)
     gtag('consent', 'default', {
       'ad_storage':        'denied',
       'ad_user_data':      'denied',
       'ad_personalization':'denied',
-      'analytics_storage': 'denied',
-      'wait_for_update':   500   // 500ms 내 동의 업데이트 대기
+      'analytics_storage': 'granted',  // 수정: GA 수집은 기본 허용
+      'wait_for_update':   2000         // 수정: async 로드 여유 시간 확보
     });
 
     // 이미 저장된 동의가 있으면 즉시 복원 (재방문자 배너 미표시)
